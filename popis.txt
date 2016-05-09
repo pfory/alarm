@@ -16,3 +16,12 @@ pro  komunikaci internet na OpenHAB použít ESP8266 pøes Rx Tx
 -rozchodit komunikaci pøes wifi modul
 -nakreslit spoj
 -krabice
+
+Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21
+
+1.okna obývák
+2.vstupní dveøe
+3.zadní dveøe
+4.PIR dole (obývák, hala, chodba)
+5.PIR nahoøe (ložnice nová a stará)
+6.èidla kouøe
