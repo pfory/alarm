@@ -8,7 +8,7 @@ http://www.arduinotech.cz/rubrika/gsm/
         - pøevodník úrovní 3,3<->5V objednat ebay http://www.ebay.com/itm/2-Channel-3-3V-5V-4CH-Logic-Level-Converter-TTL-Bi-Directional-Shifter-Module-/271957280186?hash=item3f51eac5ba:g:2DEAAOSwPcVVzc8K mám
         - DC-DC konvertor mám
         - display 20x4 mám
-
+        - ESP8266-01 mám
 
 pro  komunikaci internet na OpenHAB použít ESP8266 pøes Rx Tx
 
@@ -17,11 +17,27 @@ pro  komunikaci internet na OpenHAB použít ESP8266 pøes Rx Tx
 -nakreslit spoj
 -krabice
 
-Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21
+Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21 - obsadím tam nejdùležitìjší èidla a ta, která nemají na výstupu interval
+ètení vstupù v hlavní smyèce
 
 1.okna obývák
 2.vstupní dveøe
 3.zadní dveøe
-4.PIR dole (obývák, hala, chodba)
-5.PIR nahoøe (ložnice nová a stará)
-6.èidla kouøe
+4.okno nahoøe ložnice nová
+5.okno nahoøe ložnice stará
+6.PIR obývák
+7.PIR hala
+8.PIR chodba)
+9.PIR ložnice nová 
+10.PIR ložnice stará
+11.èidla kouøe
+
+Možnost konfigurace smyèek pøes net
+Zadání povolených èísel pøes net
+
+Zobrazení na displeji
+
+Zapnutí/vypnutí klávesnicí,èipem nebo pøes net
+
+Alarm na telefon, konfigurace telefonních èísel pøes net
+
