@@ -10,7 +10,7 @@ http://www.arduinotech.cz/rubrika/gsm/
         - display 20x4 mám
         - ESP8266-01 mám
 
-pro  komunikaci internet na OpenHAB použít ESP8266 pøes Rx Tx
+pro  komunikaci internet použít ESP8266 pøes Rx Tx
 
 -rozchodit GSM modul
 -rozchodit komunikaci pøes wifi modul
@@ -27,7 +27,7 @@ Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21 - obsadím tam nejdùležitì
 5.okno nahoøe ložnice stará
 6.PIR obývák
 7.PIR hala
-8.PIR chodba)
+8.PIR chodba
 9.PIR ložnice nová 
 10.PIR ložnice stará
 11.èidla kouøe
