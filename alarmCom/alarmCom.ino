@@ -119,8 +119,39 @@ void modemSetup() {
   SerialMon.println(F("***********************************************************"));
   
   SerialAT.write("AT+CMGF=1\n");
-  delay(2000);
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
   SerialAT.write("AT+CNMI=0,0\n");
-  delay(2000);
-
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
+  SerialAT.write("AT+CREG?\n");
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
+  SerialAT.write("AT+CSQ\n");
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
+  SerialAT.write("AT+COPS?\n");
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
+  SerialAT.write("AT+CLIP=1\n");
+  delay(3000);
+  if (SerialAT.available()) {
+    String incBytes = SerialAT.readStringUntil("\n");
+    SerialMon.println(incBytes);
+  }
 }
