@@ -10,10 +10,18 @@ http://www.arduinotech.cz/rubrika/gsm/
         - display 20x4 mám
         - ESP8266-01 mám
 
-pro  komunikaci internet použít ESP8266 pøes Rx Tx
+pro  komunikaci internet použít ESP8266 pøes Rx Tx nebo Arduino Internet Shield
+
+Napájení
+Zdroj musí dávat minimálnì 2A nutné k napájení GSM modulu, použít velký kondenzátor pro zásobu energie
+
+GSM modul 3,6-4,2V øešit z 5V pøes DC-DC konvertor
+Arduino 5V
+Pøevodník úrovní 5V a 4V
 
 -rozchodit GSM modul
--rozchodit komunikaci pøes wifi modul
+-rozchodit internet komunikaci
+-webový server v Arduino
 -nakreslit spoj
 -krabice
 
@@ -32,12 +40,23 @@ Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21 - obsadím tam nejdùležitì
 10.PIR ložnice stará
 11.èidla kouøe
 
-Možnost konfigurace smyèek pøes net
-Zadání povolených èísel pøes net
+Možnost konfigurace MQTT, prohlížeè.
+- zadání povolených èísel
+- zadání èísel na které volá alarm
+- zadání èísel na které se posílají SMS pøi alarmu
+- zadání poètu pokusù o dovolání
+- zadání text alarmové SMS
+- konfigurace smyèek
+- konfigurace režimù
+- zapnutí/vypnutí alarmu
+- zadání hesla
+
+Stav smyèek pøenášet pøes MQTT jako 16bitové èíslo, každá smyèka jeden bit, 0=v klidu, 1=alarm, režim ústøedny 3bity - 0=vypnuto, 1=....
+Ukládání konfigurace do EEPROM
 
 Zobrazení na displeji
 
-Zapnutí/vypnutí klávesnicí,èipem nebo pøes net
+Zapnutí/vypnutí klávesnicí,èipem nebo pøes net (MQTT, prohlížeè)
 
 Alarm na telefon, konfigurace telefonních èísel pøes net
 
