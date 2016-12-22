@@ -17,18 +17,22 @@
 // Use Hardware Serial on Mega, Leonardo, Micro
 #define SerialAT Serial1
 
-#define LOOPALARM LOW
+#define LOOPALARM0 LOW
 #define LOOP0 9
+#define LOOPALARM1 LOW
 #define LOOP1 10
+#define LOOPALARM2 LOW
 #define LOOP2 11
+#define LOOPALARM3 LOW
 #define LOOP3 12
+#define LOOPALARM4 LOW
 #define LOOP4 13
 
 bool isAlarmCall = false;
 bool isArmed = true;
 unsigned long alarmCallStart;
 unsigned long alarmCallDelay=20000;
-uint32_t loopStatus = 0;
+unsigned long status = 0;
 
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xCC};
 
@@ -40,10 +44,10 @@ byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xCC};
 EthernetClient client;
 
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
-unsigned int const sendTimeDelay=30000;
+unsigned int const sendTimeDelay=5000;
 signed long lastSendTime = sendTimeDelay * -1;
 
-Adafruit_MQTT_Publish _loopStatus = Adafruit_MQTT_Publish(&mqtt,  "/home/bedNew/alarm/loopStatus");
+Adafruit_MQTT_Publish _status = Adafruit_MQTT_Publish(&mqtt,  "/home/bedNew/alarm/status");
 
 TinyGsm modem(SerialAT);
 
@@ -74,26 +78,64 @@ void setup() {
 
 void loop() {
   if (millis() - lastSendTime >= sendTimeDelay) {
-    MQTT_connect();
+    /*
+ 
+    0-15bite  - loop status, 1 at position mean alarm
+    16-19bite - alarm status
+   
+bite 31        23        15         7       0
+      0000 0000 0000 0000 0000 0000 0000 0000
+                     |||| |||| |||| |||| ||||
+                al.status |||| |||| |||| ||||
+                     loop15||| |||| |||| ||||
+                          14|| |||| |||| ||||
+                           13| |||| |||| ||||
+                            12 |||| |||| ||||
+                              11||| |||| ||||
+                               10|| |||| ||||
+                                 9| |||| ||||
+                                  8 |||| ||||
+                                    7||| ||||
+                                     6|| ||||
+                                      5| ||||
+                                       4 ||||
+                                         3|||
+                                          2||
+                                           1|
+                                            0
+      */                                            
     lastSendTime = millis();
 
-    loopStatus = 0;
-    loopStatus = digitalRead(LOOP0);
-    loopStatus = 1 << digitalRead(LOOP1) | loopStatus;
-    loopStatus = 2 << digitalRead(LOOP2) | loopStatus;
-    loopStatus = 3 << digitalRead(LOOP3) | loopStatus;
-    loopStatus = 4 << digitalRead(LOOP4) | loopStatus;
-      
-    SerialMon.println(loopStatus);
+    bool l0 = digitalRead(LOOP0);
+    bool l1 = digitalRead(LOOP1);
+    bool l2 = digitalRead(LOOP2);
+    bool l3 = digitalRead(LOOP3);
+    bool l4 = digitalRead(LOOP4);
     
-    if (! _loopStatus.publish(loopStatus)) {
+    if (LOOPALARM0==LOW) { l0 = !l0; }
+    if (LOOPALARM1==LOW) { l1 = !l1; }
+    if (LOOPALARM2==LOW) { l2 = !l2; }
+    if (LOOPALARM3==LOW) { l3 = !l3; }
+    if (LOOPALARM4==LOW) { l4 = !l4; }
+    
+    status = 0;
+    status = l0;
+    status = 1 << digitalRead(l1) | status;
+    status = 2 << digitalRead(l2) | status;
+    status = 3 << digitalRead(l3) | status;
+    status = 4 << digitalRead(l4) | status;
+      
+    SerialMon.println(status);
+    MQTT_connect();
+    
+    if (! _status.publish(status)) {
       SerialMon.println(F("Failed"));
     } else {
       SerialMon.println(F("OK!"));
     }
   }
   
-  if (digitalRead(LOOP0)==LOOPALARM) {
+  if (status && 0xFFFF > 0) {
     if (!isAlarmCall && isArmed) {
       isAlarmCall=true;
       alarmCallStart = millis();
@@ -236,12 +278,21 @@ void modemSetup() {
   // }
 }
 
-void sendCommand(String command) {
+bool sendCommand(String command) {
+  return sendCommand(command, 3000, "");
+}
+
+bool sendCommand(String command, int delayms, String response) {
+  bool ret;
   command += "\n";
   SerialAT.println(command);
-  delay(3000);
+  delay(delayms);
   if (SerialAT.available()) {
     String incBytes = SerialAT.readStringUntil("\n");
     SerialMon.println(incBytes);
+    if (response.length()>0) {
+      if (incBytes==response) ret=true;
+    }
   }
+  return ret;
 }
