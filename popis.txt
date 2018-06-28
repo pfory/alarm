@@ -3,9 +3,9 @@ http://www.arduinotech.cz/rubrika/gsm/
 
         Co budu potøebovat na alarmovou ústøednu
         - GSM modul objedna ebay http://www.ebay.com/itm/Smallest-SIM800L-GPRS-GSM-Module-Card-Board-Quad-band-Onboard-Antenna/311445890048?_trksid=p2047675.c100009.m1982&_trkparms=aid%3D777000%26algo%3DABA.MBE%26ao%3D1%26asc%3D35934%26meid%3Dd14df65d99124e71af14369155b922d8%26pid%3D100009%26rk%3D1%26rkt%3D1%26mehot%3Dpp%26sd%3D172107408041 mám
-        - Arduino Mega2560 mám
+        - Arduino Pro Mini mám
         - relé modul (siréna, ...) objednat ebay http://www.ebay.com/itm/5V-2-Channel-Relay-Module-Shield-For-Arduino-ARM-PIC-AVR-DSP-MCU-Electronic-DI-/172119967044?hash=item2813264544:g:mVQAAOSwwpdW1rqJ mám
-        - pøevodník úrovní 3,3<->5V objednat ebay http://www.ebay.com/itm/2-Channel-3-3V-5V-4CH-Logic-Level-Converter-TTL-Bi-Directional-Shifter-Module-/271957280186?hash=item3f51eac5ba:g:2DEAAOSwPcVVzc8K mám
+        // - pøevodník úrovní 3,3<->5V objednat ebay http://www.ebay.com/itm/2-Channel-3-3V-5V-4CH-Logic-Level-Converter-TTL-Bi-Directional-Shifter-Module-/271957280186?hash=item3f51eac5ba:g:2DEAAOSwPcVVzc8K mám
         - DC-DC konvertor mám
         - display 20x4 mám
         - ESP8266-01 mám
@@ -15,9 +15,9 @@ pro  komunikaci internet použít ESP8266 pøes Rx Tx nebo Arduino Internet Shield
 Napájení
 Zdroj musí dávat minimálnì 2A nutné k napájení GSM modulu, použít velký kondenzátor pro zásobu energie
 
-GSM modul 3,6-4,2V øešit z 5V pøes DC-DC konvertor
-Arduino 5V
-Pøevodník úrovní 5V a 4V
+// GSM modul 3,6-4,2V øešit z 5V pøes DC-DC konvertor
+// Arduino 5V
+// Pøevodník úrovní 5V a 4V
 
 -rozchodit GSM modul
 -rozchodit internet komunikaci
@@ -25,8 +25,19 @@ Pøevodník úrovní 5V a 4V
 -nakreslit spoj
 -krabice
 
+/*
 Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21 - obsadím tam nejdùležitìjší èidla a ta, která nemají na výstupu interval
 ètení vstupù v hlavní smyèce
+*/
+
+napájení 3,6V
+
+Arduino Pro Mini má 20 vstupù - optické oddìlovaèe na vstupech
+bude ve smyèce kontrolovat vstupy a pøevádìt je na èíslo které v intervalu bude posílat na UART.
+
+ESP8266 - ovládá GSM modul a odesílá status pøes MQTT. Nastavené pøes webové rozhraní.
+
+ESP8266 - jednotka displeje a klávesnice. Pøijímá data pøe MQTT a zobrazuje stavy na displeji. Nastavení pøes webové rozhraní.
 
 1.okna obývák
 2.vstupní dveøe
@@ -51,7 +62,7 @@ Možnost konfigurace MQTT, prohlížeè.
 - zapnutí/vypnutí alarmu
 - zadání hesla
 
-Stav smyèek pøenášet pøes MQTT jako 16bitové èíslo, každá smyèka jeden bit, 0=v klidu, 1=alarm, režim ústøedny 3bity - 0=vypnuto, 1=....
+Stav smyèek pøenášet pøes MQTT jako 32bitové èíslo, každá smyèka jeden bit, 0=v klidu, 1=alarm, režim ústøedny 3bity - 0=vypnuto, 1=....
 Ukládání konfigurace do EEPROM
 
 Zobrazení na displeji
