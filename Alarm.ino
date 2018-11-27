@@ -100,6 +100,15 @@ uint32_t heartBeat                = 0;
   TinyGsm modem(SerialAT);
 #endif
 
+struct SMSmessage {
+  String number;
+  String message;
+};
+
+struct SMSList {
+  int* ids;
+  int count;
+};
 
 char                  mqtt_server[40]       = "192.168.1.56";
 uint16_t              mqtt_port             = 1883;
@@ -248,6 +257,25 @@ void setup() {
   printSystemTime();
 #endif
 
+  setupOTA();
+  
+  //setup timers
+  timer.every(10000, readSMS);
+  // timer.every(sendDelay, sendDataHA);
+  // timer.every(sendStatDelay, sendStatisticHA);
+
+  DEBUG_PRINTLN(" Ready");
+ 
+  ticker.detach();
+  //keep LED on
+  digitalWrite(BUILTIN_LED, HIGH);
+
+  prefSettings();
+ 
+}
+
+
+void setupOTA() {
 #ifdef ota
   //OTA
   // Port defaults to 8266
@@ -290,19 +318,6 @@ void setup() {
   });
   ArduinoOTA.begin();
 #endif
-  
-  
-  //setup timers
-  // timer.every(measDelay, meass);
-  // timer.every(sendDelay, sendDataHA);
-  // timer.every(sendStatDelay, sendStatisticHA);
-
-  DEBUG_PRINTLN(" Ready");
- 
-  ticker.detach();
-  //keep LED on
-  digitalWrite(BUILTIN_LED, HIGH);
-
 }
 
 void setupWifi() {
@@ -403,7 +418,8 @@ void setupModem() {
   DEBUG_PRINTLN("-------Modem Setup---------");
 
   // Set GSM module baud rate
-  TinyGsmAutoBaud(SerialAT);
+  //TinyGsmAutoBaud(SerialAT);
+  SerialAT.begin(19200);
   
     // Restart takes quite some time
   // To skip it, call init() instead of restart()
@@ -500,8 +516,9 @@ void loop() {
   ArduinoOTA.handle();
 #endif
   
-  Serial.println(".");
-  delay(500);
+  printSystemTime();
+  Serial.println();
+  delay(1000);
 }
 
 void sendSMS() {
@@ -782,4 +799,71 @@ void printSystemTime(){
   printDigits(minute());
   printDigits(second());
 #endif
+}
+
+bool readSMS(void *) {
+  readSMSPos(1);
+  return true;
+}
+
+SMSmessage readSMSPos(uint8_t i) {
+  DEBUG_PRINTLN("Reading SMS");
+  char message[300];
+  char number[50];
+  char date[50];
+  char type[10];
+
+  String head;
+  String body;
+
+  SMSmessage sms = (const struct SMSmessage) {
+    "", ""
+  };
+  modem.sendAT(GF("+CMGR="), i);
+
+  if (modem.waitResponse(10000L, GF(GSM_NL "+CMGR:"))) {
+    head = modem.stream.readStringUntil('\n');
+    body = modem.stream.readStringUntil('\n');
+    DEBUG_PRINTLN(head);
+    DEBUG_PRINTLN(body);
+
+    int counter = 0;
+    int var = 0;
+
+    for(int i=0; i< head.length(); i++) {
+      // There is a comma after comma or Quotes sign after comma
+      if(head.charAt(i) == ',') {
+            // Skip , and " sign. I know what I'm doing!
+        i++; i++;
+        while(head.charAt(i) != ',') {
+          number[counter] = head.charAt(i);
+          // I know what I'm doing!
+          counter++;
+          i++;
+        }
+        number[counter-1] = '\0';
+      }
+    }
+
+    sms.number  = String(number);
+    DEBUG_PRINTLN(sms.number);
+    body.toCharArray(message, body.length());
+    sms.message = message;
+    DEBUG_PRINTLN(sms.message);
+  }
+  return sms;
+}
+
+void prefSettings() {
+  modem.sendAT(GF("+CPMS=ME,ME,ME"));
+  modem.waitResponse();
+
+  modem.sendAT(GF("+CMGF=1")); //text mode
+  modem.waitResponse();
+
+  modem.sendAT(GF("+CNMI=1,0"));
+  modem.waitResponse();
+
+  modem.sendAT(GF("+CSCS=\"GSM\""));
+  modem.waitResponse();
 }
