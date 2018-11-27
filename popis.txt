@@ -25,11 +25,6 @@ Zdroj musí dávat minimálnì 2A nutné k napájení GSM modulu, použít velký kondenzá
 -nakreslit spoj
 -krabice
 
-/*
-Mega2560 má 6 vstupù s pøerušením 2, 3, 18, 19, 20, 21 - obsadím tam nejdùležitìjší èidla a ta, která nemají na výstupu interval
-ètení vstupù v hlavní smyèce
-*/
-
 napájení 3,6V
 
 Arduino Pro Mini má 20 vstupù - optické oddìlovaèe na vstupech
@@ -52,15 +47,15 @@ ESP8266 - jednotka displeje a klávesnice. Pøijímá data pøe MQTT a zobrazuje stav
 11.èidla kouøe
 
 Možnost konfigurace MQTT, prohlížeè.
-- zadání povolených èísel
-- zadání èísel na které volá alarm
-- zadání èísel na které se posílají SMS pøi alarmu
-- zadání poètu pokusù o dovolání
-- zadání text alarmové SMS
+- zadání povolených èísel - ok
+- zadání èísel na které volá alarm - ok
+- zadání èísel na které se posílají SMS pøi alarmu - ok
+- zadání poètu pokusù o dovolání - ok
+- zadání text alarmové SMS - ok
 - konfigurace smyèek
 - konfigurace režimù
 - zapnutí/vypnutí alarmu
-- zadání hesla
+- pøístupové kódy - ok
 
 Stav smyèek pøenášet pøes MQTT jako 32bitové èíslo, každá smyèka jeden bit, 0=v klidu, 1=alarm, režim ústøedny 3bity - 0=vypnuto, 1=....
 Ukládání konfigurace do EEPROM
