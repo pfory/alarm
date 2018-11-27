@@ -72,7 +72,7 @@ SoftwareSerial SerialAT(D6, D5); // RX, TX
 
 
 //#define DUMP_AT_COMMANDS
-//#define TINY_GSM_DEBUG SerialMon
+#define TINY_GSM_DEBUG SerialMon
 
 // Set phone numbers, if you want to test SMS and Calls
 #define SMS_TARGET  "+420724232639"
@@ -109,6 +109,29 @@ char                  mqtt_base[60]         = "/home/Meteo";
 char                  static_ip[16]         = "192.168.1.111";
 char                  static_gw[16]         = "192.168.1.1";
 char                  static_sn[16]         = "255.255.255.0";
+
+char                  alarmPhone1[15]       = "+420724232639";
+char                  alarmPhone2[15]       = "630210602";
+char                  alarmPhone3[15]       = "";
+
+char                  alarmSMS1[15]         = "+420724232639";
+char                  alarmSMS2[15]         = "";
+char                  alarmSMS3[15]         = "";
+
+char                  alarmSMSText[100]     = "Alarm chata";
+
+char                  alarmIncPhone1[15]    = "+420724232639";
+char                  alarmIncPhone2[15]    = "";
+char                  alarmIncPhone3[15]    = "";
+
+char                  acCode1[6]            = "2245";
+char                  acCode2[6]            = "";
+char                  acCode3[6]            = "";
+char                  acCode4[6]            = "";
+char                  acCode5[6]            = "";
+char                  acCode6[6]            = "";
+
+
 
 #define CFGFILE "/config.json"
 
