@@ -86,6 +86,11 @@ const char pass[] = "";
 
 int buffer;
 
+const unsigned long   sendDelay             = 5000; //in ms
+const unsigned long   sendStatDelay         = 60000;
+const unsigned long   readSMSDelay          = 10000;
+
+
 float versionSW                   = 0.1;
 String versionSWString            = "Alarm v";
 uint32_t heartBeat                = 0;
@@ -114,7 +119,7 @@ char                  mqtt_server[40]       = "192.168.1.56";
 uint16_t              mqtt_port             = 1883;
 char                  mqtt_username[40]     = "datel";
 char                  mqtt_key[20]          = "hanka12";
-char                  mqtt_base[60]         = "/home/Meteo";
+char                  mqtt_base[60]         = "/home/Alarm";
 char                  static_ip[16]         = "192.168.1.111";
 char                  static_gw[16]         = "192.168.1.1";
 char                  static_sn[16]         = "255.255.255.0";
@@ -227,6 +232,7 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 }
 
 
+/*-------------------------------------------------------------S E T U P----------------------------------------------------------*/
 void setup() {
   // Set console baud rate
   SERIAL_BEGIN;
@@ -260,9 +266,9 @@ void setup() {
   setupOTA();
   
   //setup timers
-  timer.every(10000, readSMS);
-  // timer.every(sendDelay, sendDataHA);
-  // timer.every(sendStatDelay, sendStatisticHA);
+  timer.every(readSMSDelay, readSMS);
+  timer.every(sendDelay, sendDataHA);
+  timer.every(sendStatDelay, sendStatisticHA);
 
   DEBUG_PRINTLN(" Ready");
  
@@ -389,7 +395,7 @@ void setupWifi() {
   //if it does not connect it starts an access point with the specified name
   //here  "AutoConnectAP"
   //and goes into a blocking loop awaiting configuration
-  if (!wifiManager.autoConnect("Meteo", "password")) { 
+  if (!wifiManager.autoConnect("Alarm", "password")) { 
     DEBUG_PRINTLN("failed to connect and hit timeout");
     delay(3000);
     //reset and try again, or maybe put it to deep sleep
@@ -494,6 +500,8 @@ void setupModem() {
   // DBG("Phone number (USSD):", ussd_phone_num);
 }
 
+
+/*-------------------------------------------------------------L O O P----------------------------------------------------------*/
 void loop() {
 	if(SerialMon.available()>0) {
 		buffer = SerialMon.read();
@@ -866,4 +874,46 @@ void prefSettings() {
 
   modem.sendAT(GF("+CSCS=\"GSM\""));
   modem.waitResponse();
+}
+
+bool sendStatisticHA(void *) {
+  digitalWrite(BUILTIN_LED, LOW);
+  printSystemTime();
+  DEBUG_PRINTLN(F(" - I am sending statistic to HA"));
+
+  SenderClass sender;
+  sender.add("VersionSW", versionSW);
+  sender.add("Napeti",  ESP.getVcc());
+  sender.add("HeartBeat", heartBeat++);
+  sender.add("RSSI", WiFi.RSSI());
+  DEBUG_PRINTLN(F("Calling MQTT"));
+  
+  sender.sendMQTT(mqtt_server, mqtt_port, mqtt_username, mqtt_key, mqtt_base);
+  digitalWrite(BUILTIN_LED, HIGH);
+  return true;
+}
+
+bool sendDataHA(void *) {
+  digitalWrite(BUILTIN_LED, LOW);
+  printSystemTime();
+  DEBUG_PRINTLN(F(" - I am sending data to HA"));
+  
+//Adafruit_MQTT_Subscribe restart                = Adafruit_MQTT_Subscribe(&mqtt, MQTTBASE "restart");
+  SenderClass sender;
+  sender.add("Status", "ARM");
+  sender.add("LOOP0", (uint8_t)random(0,2));
+  sender.add("LOOP1", (uint8_t)random(0,2));
+  sender.add("LOOP2", (uint8_t)random(0,2));
+  sender.add("LOOP3", (uint8_t)random(0,2));
+  sender.add("LOOP4", (uint8_t)random(0,2));
+  sender.add("LOOP5", (uint8_t)random(0,2));
+  sender.add("LOOP6", (uint8_t)random(0,2));
+  sender.add("LOOP7", (uint8_t)random(0,2));
+  sender.add("LOOP8", (uint8_t)random(0,2));
+  sender.add("LOOP9", (uint8_t)random(0,2));
+  DEBUG_PRINTLN(F("Calling MQTT"));
+
+  sender.sendMQTT(mqtt_server, mqtt_port, mqtt_username, mqtt_key, mqtt_base);
+  digitalWrite(BUILTIN_LED, HIGH);
+  return true;
 }
