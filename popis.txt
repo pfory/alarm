@@ -5,19 +5,16 @@ http://www.arduinotech.cz/rubrika/gsm/
         - GSM modul
         - Arduino Pro Mini mám
         - relé modul (siréna, ...) objednat ebay http://www.ebay.com/itm/5V-2-Channel-Relay-Module-Shield-For-Arduino-ARM-PIC-AVR-DSP-MCU-Electronic-DI-/172119967044?hash=item2813264544:g:mVQAAOSwwpdW1rqJ mám
-        // - pøevodník úrovní 3,3<->5V objednat ebay http://www.ebay.com/itm/2-Channel-3-3V-5V-4CH-Logic-Level-Converter-TTL-Bi-Directional-Shifter-Module-/271957280186?hash=item3f51eac5ba:g:2DEAAOSwPcVVzc8K mám
         - DC-DC konvertor mám
         - display 20x4 mám
-        - ESP8266-01 mám
-
-pro  komunikaci internet použít ESP8266 pøes Rx Tx nebo Arduino Internet Shield
+        - WEMOS mám
+	- port expander https://navody.arduino-shop.cz/navody-k-produktum/i2c-expander-pcf8574.html
+	- optický oddìlovaè vstupù https://www.ebay.com/i/332245646794?rt=nc&_trkparms=aid%3D222007%26algo%3DSIM.MBE%26ao%3D2%26asc%3D20160908110712%26meid%3D33f7280bf00c43c7b03201060eea2a58%26pid%3D100677%26rk%3D4%26rkt%3D13%26sd%3D351818815150%26itm%3D332245646794
 
 Napájení
 Zdroj musí dávat minimálnì 2A nutné k napájení GSM modulu, použít velký kondenzátor pro zásobu energie
 
 // GSM modul 3,6-4,2V øešit z 5V pøes DC-DC konvertor
-// Arduino 5V
-// Pøevodník úrovní 5V a 4V
 
 -rozchodit GSM modul
 -rozchodit internet komunikaci
