@@ -57,6 +57,8 @@ Možnost konfigurace MQTT, prohlížeè.
 - zapnutí/vypnutí alarmu
 - pøístupové kódy - ok
 
+- smyèka 0 má prodlevu xx sekund - nastavit
+
 Stav smyèek pøenášet pøes MQTT jako 32bitové èíslo, každá smyèka jeden bit, 0=v klidu, 1=alarm, režim ústøedny 3bity - 0=vypnuto, 1=....
 Ukládání konfigurace do EEPROM
 

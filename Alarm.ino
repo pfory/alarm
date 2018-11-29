@@ -145,7 +145,10 @@ char                  acCode4[6]            = "";
 char                  acCode5[6]            = "";
 char                  acCode6[6]            = "";
 
+byte                  arrLOOPStatus[10];
+byte                  arrLOOPArmed[10];
 
+byte                  alarmArmed            = false;
 
 #define CFGFILE "/config.json"
 
@@ -900,19 +903,15 @@ bool sendDataHA(void *) {
   
 //Adafruit_MQTT_Subscribe restart                = Adafruit_MQTT_Subscribe(&mqtt, MQTTBASE "restart");
   SenderClass sender;
-  sender.add("Status", "ARM");
-  sender.add("LOOP0", (uint8_t)random(0,2));
-  sender.add("LOOP1", (uint8_t)random(0,2));
-  sender.add("LOOP2", (uint8_t)random(0,2));
-  sender.add("LOOP3", (uint8_t)random(0,2));
-  sender.add("LOOP4", (uint8_t)random(0,2));
-  sender.add("LOOP5", (uint8_t)random(0,2));
-  sender.add("LOOP6", (uint8_t)random(0,2));
-  sender.add("LOOP7", (uint8_t)random(0,2));
-  sender.add("LOOP8", (uint8_t)random(0,2));
-  sender.add("LOOP9", (uint8_t)random(0,2));
-  DEBUG_PRINTLN(F("Calling MQTT"));
 
+  sender.add("Status", alarmArmed);
+  
+  for (byte i=0; i<10; i++) {
+    sender.add(String("LOOP") + String(i), (uint8_t)random(0,2));
+    sender.add(String("LOOP") + String(i) + String("Armed/status"), arrLOOPStatus[i]);
+  }
+  DEBUG_PRINTLN(F("Calling MQTT"));
+  
   sender.sendMQTT(mqtt_server, mqtt_port, mqtt_username, mqtt_key, mqtt_base);
   digitalWrite(BUILTIN_LED, HIGH);
   return true;
