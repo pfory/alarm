@@ -46,6 +46,8 @@ unsigned int          localPort             = 8888;  // local port to listen for
 time_t getNtpTime();
 #endif
 
+SenderClass sender;
+
 
 #define verbose
 #ifdef verbose
@@ -280,7 +282,6 @@ void setup() {
   digitalWrite(BUILTIN_LED, HIGH);
 
   prefSettings();
- 
 }
 
 
@@ -527,9 +528,9 @@ void loop() {
   ArduinoOTA.handle();
 #endif
   
-  printSystemTime();
-  Serial.println();
-  delay(1000);
+  // printSystemTime();
+  // Serial.println();
+  // delay(1000);
 }
 
 void sendSMS() {
@@ -884,12 +885,13 @@ bool sendStatisticHA(void *) {
   printSystemTime();
   DEBUG_PRINTLN(F(" - I am sending statistic to HA"));
 
-  SenderClass sender;
   sender.add("VersionSW", versionSW);
   sender.add("Napeti",  ESP.getVcc());
   sender.add("HeartBeat", heartBeat++);
   sender.add("RSSI", WiFi.RSSI());
   DEBUG_PRINTLN(F("Calling MQTT"));
+  
+  sender.subscribe(mqtt_base, "");
   
   sender.sendMQTT(mqtt_server, mqtt_port, mqtt_username, mqtt_key, mqtt_base);
   digitalWrite(BUILTIN_LED, HIGH);
@@ -901,9 +903,6 @@ bool sendDataHA(void *) {
   printSystemTime();
   DEBUG_PRINTLN(F(" - I am sending data to HA"));
   
-//Adafruit_MQTT_Subscribe restart                = Adafruit_MQTT_Subscribe(&mqtt, MQTTBASE "restart");
-  SenderClass sender;
-
   sender.add("Status", alarmArmed);
   
   for (byte i=0; i<10; i++) {

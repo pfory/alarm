@@ -39,12 +39,12 @@ public:
   void add(String id, int32_t value);
   void add(String id, uint32_t value);
   void mqttCallback(char* topic, byte* payload, unsigned int length);
+  void subscribe(String name, String topic);
   // ~SenderClass();
 
 private:
   WiFiClient _client;
   PubSubClient _mqttClient;
-
   // StaticJsonBuffer<200> _jsonBuffer;
   DynamicJsonBuffer _jsonBuffer;
   // JsonObject data;

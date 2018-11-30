@@ -17,6 +17,10 @@ void SenderClass::add(String id, int32_t value) {
     _jsonVariant[id] = value;
 }
 
+void SenderClass::subscribe(String name, String topic) {
+  _mqttClient.subscribe((name + "/" + topic).c_str());
+}
+
 bool SenderClass::sendMQTT(String server, uint16_t port, String username, String password, String name) {
     _mqttClient.setClient(_client);
     _mqttClient.setServer(server.c_str(), port);
